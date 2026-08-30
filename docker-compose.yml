@@ -1,0 +1,12 @@
+services:
+  jarvis:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - jarvis_storage:/app/storage
+
+volumes:
+  jarvis_storage:
