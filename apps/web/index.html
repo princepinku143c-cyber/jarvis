@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>JARVIS</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color-scheme: dark; }
+    body { max-width: 900px; margin: 0 auto; padding: 32px 20px; background: #0b0d10; color: #eef2f7; }
+    textarea { width: 100%; min-height: 110px; box-sizing: border-box; padding: 12px; background: #151922; color: inherit; border: 1px solid #303746; border-radius: 10px; }
+    button { margin-top: 12px; padding: 10px 16px; border: 0; border-radius: 8px; cursor: pointer; }
+    pre { white-space: pre-wrap; padding: 16px; background: #151922; border-radius: 10px; min-height: 80px; }
+  </style>
+</head>
+<body>
+  <h1>JARVIS</h1>
+  <p>Personal AI assistant control surface.</p>
+  <textarea id="message" placeholder="Ask JARVIS something..."></textarea>
+  <button id="send">Send</button>
+  <pre id="output">Ready.</pre>
+  <script>
+    const output = document.querySelector('#output');
+    document.querySelector('#send').onclick = async () => {
+      const message = document.querySelector('#message').value.trim();
+      if (!message) return;
+      output.textContent = 'Working...';
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST', headers: {'content-type': 'application/json'},
+          body: JSON.stringify({message})
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Request failed');
+        output.textContent = data.response;
+      } catch (error) {
+        output.textContent = `Error: ${error.message}`;
+      }
+    };
+  </script>
+</body>
+</html>
